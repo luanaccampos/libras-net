@@ -46,7 +46,7 @@ while cap.isOpened():
             
             aux = np.array(aux).reshape(1, -1)
             
-            pred = model.predict_proba(aux)
+            pred = model.predict(aux)
             print(pred)
 
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
