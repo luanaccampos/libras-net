@@ -23,6 +23,7 @@ while cap.isOpened():
     image.flags.writeable = False
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     results = hands.process(image)
+    pred = -1
 
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
@@ -45,10 +46,16 @@ while cap.isOpened():
                 aux.append(hand_landmarks.landmark[i].z)
             
             aux = np.array(aux).reshape(1, -1)
-            
-            pred = model.predict(aux)
-            print(pred)
+            pred = model.predict(aux)[0]
 
-    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+            
+    else:
+       pred = -1
+            
+
+    image = cv2.flip(image, 1)
+    if pred != -1:
+        cv2.putText(image, pred[0].upper(), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 4, cv2.LINE_AA)
+    cv2.imshow('MediaPipe Hands', image)
     if cv2.waitKey(5) & 0xFF == 27:
         break
