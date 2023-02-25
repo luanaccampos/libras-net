@@ -3,7 +3,8 @@ from sklearn import preprocessing
 import pandas as pd
 import numpy as np
 import pickle
-from sklite import LazyExport
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
 
 le = preprocessing.LabelEncoder()
 le.fit(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'i', 'l', 'm', 'n', 'o', 'p',
@@ -17,7 +18,12 @@ Y = np.array(le.transform(dataset['classe']))
 neigh = KNeighborsClassifier(n_neighbors=7)
 neigh.fit(X, Y)
 
-lazy = LazyExport(neigh)
-lazy.save('alphabet_model.json')
+initial_type = [ 
+    ( 'input_landmarks' , FloatTensorType( [None,63] ) ) 
+]
+
+converted_model = convert_sklearn(neigh , initial_types=initial_type )
+with open( "alphabet_model.onnx", "wb" ) as f:
+        f.write( converted_model.SerializeToString() )
 
 pickle.dump(neigh, open('alphabet_model.pickle', "wb"))
