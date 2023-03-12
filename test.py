@@ -1,5 +1,6 @@
 import pickle
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
 import pandas as pd
 import numpy as np
 import mediapipe as mp
@@ -12,6 +13,8 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
 cap = cv2.VideoCapture(0)
+classes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'i', 'l', 'm', 'n', 'o', 'p',
+        'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
 
 hands = mp_hands.Hands(model_complexity=0, max_num_hands=1)
 
@@ -55,7 +58,7 @@ while cap.isOpened():
 
     image = cv2.flip(image, 1)
     if pred != -1:
-        cv2.putText(image, pred[0].upper(), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 4, cv2.LINE_AA)
+        cv2.putText(image, classes[pred].upper(), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 4, cv2.LINE_AA)
     cv2.imshow('MediaPipe Hands', image)
     if cv2.waitKey(5) & 0xFF == 27:
         break

@@ -5,10 +5,6 @@ import pandas as pd
 import sys
 
 
-dataset = pd.read_csv('dataset.csv', header=0)
-
-classe = sys.argv[1]
-
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
@@ -47,7 +43,6 @@ while cap.isOpened():
                 aux.append(hand_landmarks.landmark[i].x)
                 aux.append(hand_landmarks.landmark[i].y)
                 aux.append(hand_landmarks.landmark[i].z)
-            aux.append(classe)
             pontos.append(aux)
 
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
@@ -55,8 +50,9 @@ while cap.isOpened():
         break
 
 pontos = np.array(pontos)
-df = pd.DataFrame(pontos, columns=dataset.columns)
 
-pd.concat([dataset, df]).to_csv('dataset.csv', index=False)
+df = pd.DataFrame(pontos, columns= [i for i in range(0, 63)])
+
+df.to_csv('outlier.csv', index=False)
 
 
