@@ -15,6 +15,13 @@ cap = cv2.VideoCapture(0)
 
 hands = mp_hands.Hands(model_complexity=0, max_num_hands=1)
 
+classes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'i', 'l', 'm', 'n', 'o', 'p',
+        'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
+
+frames = []
+
+
+
 while cap.isOpened():
     success, image = cap.read()
     if not success:
@@ -55,7 +62,16 @@ while cap.isOpened():
 
     image = cv2.flip(image, 1)
     if pred != -1:
-        cv2.putText(image, pred[0].upper(), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 4, cv2.LINE_AA)
+        cv2.putText(image, classes[pred].upper(), (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 4, cv2.LINE_AA)
     cv2.imshow('MediaPipe Hands', image)
+    frames.append(image)
     if cv2.waitKey(5) & 0xFF == 27:
         break
+
+size = (frames[0].shape[1], frames[0].shape[0])
+result = cv2.VideoWriter('filename.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20, size)
+
+for frame in frames:
+   result.write(frame)
+
+result.release()
